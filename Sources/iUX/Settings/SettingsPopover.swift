@@ -14,29 +14,51 @@ public protocol SettingsTab: Hashable, Identifiable, CaseIterable {
 // content column, exactly like Clonk's `PopoverView`. Apps supply the tab enum
 // and a builder that returns the body for each tab; the chrome stays identical
 // across every app.
-public struct SettingsPopover<Tab: SettingsTab, Content: View>: View
+//
+// Pass a `trailing` view to insert a control on the right side of the tab bar
+// (e.g. a pop-out button). Omit it and the bar behaves exactly as before.
+public struct SettingsPopover<Tab: SettingsTab, Content: View, Trailing: View>: View
 where Tab.AllCases: RandomAccessCollection {
     @Binding var selection: Tab
     let width: CGFloat
     let content: (Tab) -> Content
+    let trailing: Trailing
 
+    /// Original init — no trailing control. Existing callers are unaffected.
     public init(
         selection: Binding<Tab>,
         width: CGFloat = UX.popoverWidth,
         @ViewBuilder content: @escaping (Tab) -> Content
+    ) where Trailing == EmptyView {
+        self._selection = selection
+        self.width = width
+        self.content = content
+        self.trailing = EmptyView()
+    }
+
+    /// Extended init — trailing view appears to the right of the tab picker.
+    public init(
+        selection: Binding<Tab>,
+        width: CGFloat = UX.popoverWidth,
+        @ViewBuilder trailing: () -> Trailing,
+        @ViewBuilder content: @escaping (Tab) -> Content
     ) {
         self._selection = selection
         self.width = width
+        self.trailing = trailing()
         self.content = content
     }
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Picker("", selection: $selection) {
-                ForEach(Tab.allCases) { Text($0.title).tag($0) }
+            HStack(spacing: 8) {
+                Picker("", selection: $selection) {
+                    ForEach(Tab.allCases) { Text($0.title).tag($0) }
+                }
+                .pickerStyle(.segmented)
+                .labelsHidden()
+                trailing
             }
-            .pickerStyle(.segmented)
-            .labelsHidden()
             .padding(.bottom, UX.tabBarSpacing)
 
             content(selection)
