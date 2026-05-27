@@ -14,12 +14,13 @@
 
 **The shared UX layer for our macOS apps.**
 
-![Platform](https://img.shields.io/badge/macOS%2026%20Tahoe-black?style=flat-square)
+![Platform](https://img.shields.io/badge/macOS%2014%2B-black?style=flat-square)
 ![Language](https://img.shields.io/badge/Swift%206.1-orange?style=flat-square&logo=swift)
 ![SwiftPM](https://img.shields.io/badge/SwiftPM-source--only-blue?style=flat-square)
+[![License](https://img.shields.io/badge/license-CLL%20v1.2-blue?style=flat-square)](LICENSE.md)
 ![Linking](https://img.shields.io/badge/static-linked-brightgreen?style=flat-square)
 
-`settings · menu bar · overlays`
+`tokens · settings · menu bar · overlays`
 
 </div>
 
@@ -29,14 +30,19 @@
 
 ---
 
+## Why it exists
+
+Across a multi-app catalogue, the worst part isn't building each app — it's keeping them consistent. The settings popover in app A drifts from the one in app B, then in app C, and nobody notices until a user does. Spacing, corner radii, glass opacity, the exact shade of dark-mode grey — every value is a decision waiting to be made wrong twice.
+
+iUX-MacOS is the shared toolbox every Mac app we ship links: one `UX` namespace for the design tokens, one menu-bar agent scaffold, one settings popover, one overlay window, one glass panel. Change a token once and every app moves together.
+
+---
+
 ## What it is
 
 iUX-MacOS is a tiny, source-only Swift package. Every app links it and gets the same
 settings popover, menu-bar agent and floating overlay windows — so we stop
 re-coding widget chrome, settings layouts and popover styling app by app.
-
-The components, spacing and styling are lifted straight from **[Clonk](../clonk)**
-so apps already built by hand keep matching pixel-for-pixel after migrating.
 
 ---
 
@@ -161,7 +167,9 @@ iUX-MacOS is a source-only library. It makes no network connections, collects no
 
 ## Building
 
-Requires **macOS 26 (Tahoe)** and a recent Swift toolchain.
+Requires **macOS 14 or later** and a recent Swift toolchain. Individual components light
+up additional behaviour on macOS 15/26 (Tahoe) where the underlying APIs are available
+— consuming apps decide their own deployment floor.
 
 iUX-MacOS is a library — there's nothing to run on its own. Build and test it with SwiftPM:
 
@@ -170,11 +178,27 @@ swift build      # compile the library
 swift test       # run the tests (if any)
 ```
 
-Apps consume it via a local path (`../iUX-MacOS`). Check it out as a sibling directory
-beside the apps that depend on it:
+Apps typically consume it via a local path (`../iUX-MacOS`). Check it out as a sibling
+directory beside the apps that depend on it:
 
 ```
 Projects/
-├── clonk/        ← an app that links iUX-MacOS
+├── my-app/       ← an app that links iUX-MacOS
 └── iUX-MacOS/    ← this repo
 ```
+
+---
+
+## License
+
+iUX-MacOS is released under the **Counter-Limitation License (CLL) v1.2** — see [`LICENSE.md`](LICENSE.md) for the full text, with the canonical version maintained at [opensourcevillain/licenses](https://github.com/opensourcevillain/licenses).
+
+In short — for the things most people will actually do with it:
+
+- **Personal, educational, research, accessibility, artistic, community use** — go ahead. No attribution required for private use; please credit `anti.ltd` in any public redistribution.
+- **Small, non-commercial Mac apps** — link it, build on it, ship the source.
+- **Apps you write that link iUX-MacOS** — your work, your licence. Only modifications to iUX-MacOS itself need to be shared back under the same terms.
+- **Large corporations (≥ $10M revenue or ≥ 100 staff)** — no use without prior written permission.
+- **Paid products built primarily on iUX-MacOS, or compiled redistribution of the library itself** — requires prior written permission. Any authorized commercial revenue is directed to charity per the licence.
+
+For permissions: [contact@anti.ltd](mailto:contact@anti.ltd).
