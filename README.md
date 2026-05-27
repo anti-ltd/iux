@@ -10,7 +10,7 @@
 
 <img src="assets/icon.png" width="140" alt="iUX">
 
-# iUX
+# iUX-MacOS
 
 **The shared UX layer for our macOS apps.**
 
@@ -31,7 +31,7 @@
 
 ## What it is
 
-iUX is a tiny, source-only Swift package. Every app links it and gets the same
+iUX-MacOS is a tiny, source-only Swift package. Every app links it and gets the same
 settings popover, menu-bar agent and floating overlay windows — so we stop
 re-coding widget chrome, settings layouts and popover styling app by app.
 
@@ -42,10 +42,10 @@ so apps already built by hand keep matching pixel-for-pixel after migrating.
 
 ## Source-only
 
-iUX ships **no binary** — just Swift source. Apps add it as a local or git
-dependency and `import iUX`. It static-links and dead-code-strips, so each app's
+iUX-MacOS ships **no binary** — just Swift source. Apps add it as a local or git
+dependency and `import iUX_MacOS`. It static-links and dead-code-strips, so each app's
 binary only pays for the pieces it actually uses. Change a design token in one
-place and every app that links iUX moves together.
+place and every app that links iUX-MacOS moves together.
 
 ---
 
@@ -71,25 +71,25 @@ Add it as a local dependency in an app's `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(path: "../iUX"),
+    .package(path: "../iUX-MacOS"),
 ],
 targets: [
     .executableTarget(
         name: "MyApp",
-        dependencies: ["iUX"],
+        dependencies: ["iUX-MacOS"],
         path: "Sources/MyApp"
     ),
 ]
 ```
 
-Then `import iUX`.
+Then `import iUX_MacOS`.
 
 ---
 
 ## Usage sketch
 
 ```swift
-import iUX
+import iUX_MacOS
 import SwiftUI
 
 enum Tab: String, SettingsTab {
@@ -141,13 +141,13 @@ overlay.show()
 
 | File | Role |
 |------|------|
-| [`Tokens.swift`](Sources/iUX/Theme/Tokens.swift) | Design tokens — the `UX` namespace of shared metrics |
-| [`SettingsPopover.swift`](Sources/iUX/Settings/SettingsPopover.swift) | Segmented tab switcher + fixed-width content column |
-| [`CardSection.swift`](Sources/iUX/Settings/CardSection.swift) | Titled card group of rows |
-| [`Rows.swift`](Sources/iUX/Settings/Rows.swift) | `ToggleRow`, `SliderRow`, `PlayButton` |
-| [`MenuBarController.swift`](Sources/iUX/MenuBar/MenuBarController.swift) | `NSStatusItem` host — popover + right-click menu |
-| [`OverlayWindow.swift`](Sources/iUX/Overlay/OverlayWindow.swift) | Borderless, draggable, always-on-top panel |
-| [`GlassPanel.swift`](Sources/iUX/Overlay/GlassPanel.swift) | The `.glassPanel()` dark-glass chrome |
+| [`Tokens.swift`](Sources/iUX-MacOS/Theme/Tokens.swift) | Design tokens — the `UX` namespace of shared metrics |
+| [`SettingsPopover.swift`](Sources/iUX-MacOS/Settings/SettingsPopover.swift) | Segmented tab switcher + fixed-width content column |
+| [`CardSection.swift`](Sources/iUX-MacOS/Settings/CardSection.swift) | Titled card group of rows |
+| [`Rows.swift`](Sources/iUX-MacOS/Settings/Rows.swift) | `ToggleRow`, `SliderRow`, `PlayButton` |
+| [`MenuBarController.swift`](Sources/iUX-MacOS/MenuBar/MenuBarController.swift) | `NSStatusItem` host — popover + right-click menu |
+| [`OverlayWindow.swift`](Sources/iUX-MacOS/Overlay/OverlayWindow.swift) | Borderless, draggable, always-on-top panel |
+| [`GlassPanel.swift`](Sources/iUX-MacOS/Overlay/GlassPanel.swift) | The `.glassPanel()` dark-glass chrome |
 
 ---
 
@@ -155,7 +155,7 @@ overlay.show()
 
 ## Privacy
 
-iUX is a source-only library. It makes no network connections, collects no analytics, and reads no user data. It has no runtime of its own — it static-links into each app that uses it.
+iUX-MacOS is a source-only library. It makes no network connections, collects no analytics, and reads no user data. It has no runtime of its own — it static-links into each app that uses it.
 
 ---
 
@@ -163,18 +163,18 @@ iUX is a source-only library. It makes no network connections, collects no analy
 
 Requires **macOS 26 (Tahoe)** and a recent Swift toolchain.
 
-iUX is a library — there's nothing to run on its own. Build and test it with SwiftPM:
+iUX-MacOS is a library — there's nothing to run on its own. Build and test it with SwiftPM:
 
 ```bash
 swift build      # compile the library
 swift test       # run the tests (if any)
 ```
 
-Apps consume it via a local path (`../iUX`). Check it out as a sibling directory
+Apps consume it via a local path (`../iUX-MacOS`). Check it out as a sibling directory
 beside the apps that depend on it:
 
 ```
 Projects/
-├── clonk/   ← an app that links iUX
-└── iUX/     ← this repo · https://github.com/anti-ltd/iux
+├── clonk/        ← an app that links iUX-MacOS
+└── iUX-MacOS/    ← this repo
 ```
